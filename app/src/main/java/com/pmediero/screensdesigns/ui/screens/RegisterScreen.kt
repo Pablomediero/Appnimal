@@ -46,7 +46,8 @@ import com.pmediero.screensdesigns.ui.theme.ScreensDesignsTheme
 @Composable
 fun RegisterScreen() {
     val spacing = LocalSpacing.current
-    val height = LocalConfiguration.current.screenHeightDp.dp
+    var step by remember { mutableStateOf(1) }
+    val totalSteps = 3
 
     Column(
         Modifier
@@ -55,77 +56,59 @@ fun RegisterScreen() {
             .background(Color.White)
     ) {
         RegisterHeader(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = spacing.medium,
-                    start = spacing.medium,
-                    end = spacing.medium,
-                    bottom = spacing.medium
-                ),
-            spacing
+                .padding(spacing.medium),
+            spacing = spacing,
+            step = step,
+            totalSteps = totalSteps,
+            onBack = {
+                if (step > 1) step--
+            }
         )
 
         RegisterBody(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = spacing.medium,
-                    start = spacing.medium,
-                    end = spacing.medium,
-                    bottom = spacing.medium
-                ),
-            spacing
+                .padding(spacing.medium),
+            spacing = spacing,
+            step = step
         )
 
-      RegisterFooter(
-            Modifier
+        RegisterFooter(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = spacing.medium,
-                    start = spacing.medium,
-                    end = spacing.medium,
-                    bottom = spacing.medium
-                ),
-            spacing
+                .padding(spacing.medium),
+            spacing = spacing,
+            step = step,
+            totalSteps = totalSteps,
+            onNext = {
+                if (step < totalSteps) step++
+            }
         )
     }
 }
-
 // region SCREENS
 @Composable
-private fun RegisterHeader(modifier: Modifier, spacing: Spacing) {
+private fun RegisterHeader(modifier: Modifier, spacing: Spacing, step: Int, totalSteps: Int, onBack: () -> Unit) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(
-            spacing.large,
-            Alignment.Top
-        ),
+        verticalArrangement = Arrangement.spacedBy(spacing.large, Alignment.Top),
         horizontalAlignment = Alignment.Start,
     ) {
-
-        BackNavigationBar(
-            text = "Volver atrás",
-            onBackClick = {}
-        )
-        OnboardingProgressBar(
-            step = 1,
-            totalSteps = 3
-        )
-
+        BackNavigationBar(text = "Volver atrás", onBackClick = onBack)
+        OnboardingProgressBar(step = step, totalSteps = totalSteps)
     }
 }
 
 @Composable
-private fun RegisterBody(modifier: Modifier, spacing: Spacing) {
-    Column {
-        RegisterBodyStep1(spacing = spacing)
-        RegisterBodyStep2(spacing = spacing)
-        RegisterBodyStep3(spacing = spacing)
+private fun RegisterBody(modifier: Modifier, spacing: Spacing, step: Int) {
+    when (step) {
+        1 -> RegisterBodyStep1(spacing)
+        2 -> RegisterBodyStep2(spacing)
+        3 -> RegisterBodyStep3(spacing)
     }
-
 }
-
 @Composable
 private fun RegisterBodyStep1(spacing: Spacing){
     var userName by remember { mutableStateOf("") }
@@ -291,11 +274,12 @@ private fun RegisterBodyStep3(spacing: Spacing){
 }
 
 @Composable
-private fun RegisterFooter(modifier: Modifier, spacing: Spacing) {
+private fun RegisterFooter(modifier: Modifier, spacing: Spacing, step: Int, totalSteps: Int, onNext: () -> Unit) {
     Column(modifier = modifier) {
+        val isLastStep = step == totalSteps
         CustomButton(
-            text = "Siguiente",
-            onClick = {}
+            text = if (isLastStep) "Finalizar" else "Siguiente",
+            onClick = onNext
         )
     }
 }
