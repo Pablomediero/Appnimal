@@ -55,7 +55,7 @@ fun RegisterScreen() {
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
-        RegisterHeader(
+        ProfileSettingsHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(spacing.medium),
@@ -67,7 +67,7 @@ fun RegisterScreen() {
             }
         )
 
-        RegisterBody(
+        ProfileSettingsBody(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(spacing.medium),
@@ -90,7 +90,7 @@ fun RegisterScreen() {
 }
 // region SCREENS
 @Composable
-private fun RegisterHeader(modifier: Modifier, spacing: Spacing, step: Int, totalSteps: Int, onBack: () -> Unit) {
+private fun ProfileSettingsHeader(modifier: Modifier, spacing: Spacing, step: Int, totalSteps: Int, onBack: () -> Unit) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(spacing.large, Alignment.Top),
@@ -102,7 +102,7 @@ private fun RegisterHeader(modifier: Modifier, spacing: Spacing, step: Int, tota
 }
 
 @Composable
-private fun RegisterBody(modifier: Modifier, spacing: Spacing, step: Int) {
+private fun ProfileSettingsBody(modifier: Modifier, spacing: Spacing, step: Int) {
     when (step) {
         1 -> RegisterBodyStep1(spacing)
         2 -> RegisterBodyStep2(spacing)
@@ -278,7 +278,7 @@ private fun RegisterFooter(modifier: Modifier, spacing: Spacing, step: Int, tota
     Column(modifier = modifier) {
         val isLastStep = step == totalSteps
         CustomButton(
-            text = if (isLastStep) "Finalizar" else "Siguiente",
+            text = if (isLastStep) "Comenzar" else "Siguiente",
             onClick = onNext
         )
     }

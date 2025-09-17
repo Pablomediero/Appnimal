@@ -45,7 +45,7 @@ fun ProfileSettingsScreen() {
             .verticalScroll(rememberScrollState())
             .background(Color.White)
     ) {
-        RegisterHeader(
+        ProfileSettingsHeader(
             Modifier
                 .fillMaxWidth()
                 .padding(
@@ -57,7 +57,7 @@ fun ProfileSettingsScreen() {
             spacing
         )
 
-        RegisterBody(
+        ProfileSettingsBody(
             Modifier
                 .fillMaxWidth()
                 .padding(
@@ -85,7 +85,7 @@ fun ProfileSettingsScreen() {
 
 // region SCREENS
 @Composable
-private fun RegisterHeader(modifier: Modifier, spacing: Spacing) {
+private fun ProfileSettingsHeader(modifier: Modifier, spacing: Spacing) {
     Column(modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(
@@ -105,7 +105,7 @@ private fun RegisterHeader(modifier: Modifier, spacing: Spacing) {
 }
 
 @Composable
-private fun RegisterBody(modifier: Modifier, spacing: Spacing) {
+private fun ProfileSettingsBody(modifier: Modifier, spacing: Spacing) {
     Column(modifier = modifier) {
         ProfileSettingsSectionProfile(spacing = spacing)
         ProfileSettingsSectionName(spacing = spacing)
@@ -137,7 +137,9 @@ fun ProfileSettingsSectionProfile(spacing: Spacing){
         horizontalAlignment = Alignment.Start,
     ) {
         Text("Imagen de perfil", fontWeight = FontWeight.Bold)
-        ProfileImageViewCustom { }
+        ProfileImageViewCustom(
+            onClick = {}
+        )
         Column {
             Text(
                 text = "Consejo: utiliza una foto en la que tu rostro sea reconocible.",

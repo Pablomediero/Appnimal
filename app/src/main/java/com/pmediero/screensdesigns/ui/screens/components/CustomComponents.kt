@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -22,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
@@ -49,7 +49,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -89,12 +91,15 @@ fun OutlinedCustomButton(
 @Composable
 fun ProfileImageViewCustom(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    size: Dp = 180.dp,
+    text: String = "+ Sube una imagen de perfil...",
+    showText: Boolean = true
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .size(180.dp) // Ajustable según diseño real
+            .size(size)
             .clip(CircleShape)
             .background(Color(0xFFF9F9F9))
             .border(
@@ -104,15 +109,17 @@ fun ProfileImageViewCustom(
             )
             .clickable(onClick = onClick)
     ) {
-        Text(
-            text = "+ Sube una imagen de perfil...",
-            color = Color(0xFF424242),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center,
-            lineHeight = 18.sp,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        if(showText){
+            Text(
+                text = text,
+                color = Color(0xFF424242),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
     }
 }
 
@@ -437,5 +444,135 @@ fun OptionSelectorGroup(
         }
     }
 }
+
+@Composable
+fun IconWithBackground(
+    icon: Painter,
+    text: String? = null,
+    contentDescription: String? = null,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = Color(0xFFF9FAFB),
+    cornerRadius: Dp = 16.dp,
+    iconTint: Color = Color(0xFF004A99),
+    iconSize: Dp = 20.dp,
+    textColor: Color = Color(0xFF004A99),
+    fontSize: TextUnit = 14.sp,
+    fontWeight: FontWeight = FontWeight.Medium,
+    paddingHorizontal: Dp = 16.dp,
+    paddingVertical: Dp = 12.dp,
+    spacing: Dp = 8.dp,
+    onClick: (() -> Unit)? = null
+) {
+    val shape = RoundedCornerShape(cornerRadius)
+
+    Row(
+        modifier = modifier
+            .background(color = backgroundColor, shape = shape)
+            .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = contentDescription,
+            tint = iconTint,
+            modifier = Modifier.size(iconSize)
+        )
+
+        if (!text.isNullOrBlank()) {
+            Spacer(modifier = Modifier.width(spacing))
+            Text(
+                text = text,
+                color = textColor,
+                fontSize = fontSize,
+                fontWeight = fontWeight
+            )
+        }
+    }
+}
+
+
+@Composable
+fun CustomBottomNavBar(
+    selectedItem: Int,
+    onItemSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    items: List<BottomNavItem>
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(72.dp),
+        color = Color.White,
+        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items.forEachIndexed { index, item ->
+                BottomNavigationItem(
+                    item = item,
+                    isSelected = selectedItem == index,
+                    onClick = { onItemSelected(index) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationItem(
+    item: BottomNavItem,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .background(
+                    color = if (isSelected) Color(0xFFE8F0FE) else Color.Transparent,
+                    shape = RoundedCornerShape(8.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = item.iconRes,
+                contentDescription = item.label,
+                tint = if (isSelected) Color(0xFF004A99) else Color.LightGray,
+                modifier = Modifier.size(22.dp)
+            )
+
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        if (isSelected) {
+            Box(
+                modifier = Modifier
+                    .width(16.dp)
+                    .height(3.dp)
+                    .background(Color(0xFF004A99), shape = RoundedCornerShape(2.dp))
+            )
+        }
+    }
+}
+
+data class BottomNavItem(
+    val iconRes: ImageVector,
+    val label: String
+)
+
+
 
 
